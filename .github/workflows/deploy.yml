@@ -34,7 +34,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GH_TOKEN }}
-          publish_dir: /build
+          publish_dir: /dist
           publish_branch: gh-pages
           user_name: github-actions
           user_email: github-actions@github.com
