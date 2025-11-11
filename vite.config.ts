@@ -10,6 +10,10 @@ export default defineConfig(({ mode }) => {
         host: '0.0.0.0',
       },
       plugins: [react()],
+      base: '/SIMS_1/',   // <- set to your repo name (or '/' for user/organization pages)
+      build: {
+        outDir: 'dist',
+      },
       define: {
         'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
         'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
