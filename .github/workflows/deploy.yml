@@ -1,8 +1,8 @@
 name: Deploy to GitHub Pages
 
-# grant the workflow permission to push pages
+# ✅ Grant the workflow permission to push to gh-pages
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          persist-credentials: true   # ensure git push uses GITHUB_TOKEN
+          persist-credentials: true
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -33,6 +33,6 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           publish_branch: gh-pages
