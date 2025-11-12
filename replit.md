@@ -41,8 +41,11 @@ SIMS is a comprehensive sports information management system built with React, T
 - Changed port from 3000 to 5000 for Replit compatibility
 - Updated base path from `/SIMS_1/` to `/` 
 - Added HMR configuration for proper hot reload through Replit proxy
+- Added `allowedHosts: true` to allow Replit proxy host
 - Configured workflow for webview output
 - Updated .gitignore to preserve Replit configuration files
+- Added GEMINI_API_KEY environment variable for AI features
+- Configured deployment settings for autoscale deployment
 
 ## User Preferences
 None set yet.
