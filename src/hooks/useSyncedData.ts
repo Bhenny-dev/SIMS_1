@@ -1,14 +1,14 @@
 
 import { useState, useEffect, useCallback } from 'react';
-
-const STORAGE_EVENT_KEY = 'storage-update';
+import { useSync } from '../contexts/SyncContext';
 
 /**
- * A custom React hook to fetch data and keep it synchronized with localStorage updates.
+ * A custom React hook to fetch data and keep it synchronized with updates.
  * It prevents state updates on unmounted components to avoid common React errors.
+ * Now integrates with SyncContext for enhanced cross-tab and future cross-device sync.
  *
  * @param fetcher A function that returns a promise resolving to the data.
- * @param watchKeys An array of localStorage keys to watch for changes.
+ * @param watchKeys An array of storage keys to watch for changes. Use ['*'] to watch all changes.
  * @returns An object with the fetched data, loading state, and a refetch function.
  */
 export function useSyncedData<T>(
@@ -18,6 +18,7 @@ export function useSyncedData<T>(
     const [data, setData] = useState<T | null>(null);
     const [loading, setLoading] = useState(true);
     const [trigger, setTrigger] = useState(0);
+    const { syncTransport } = useSync();
 
     const refetch = useCallback(() => setTrigger(t => t + 1), []);
 
@@ -28,8 +29,6 @@ export function useSyncedData<T>(
 
         const doFetch = async () => {
             if (!isMounted) return;
-            // Only show a full loading state on the very first fetch.
-            // Subsequent fetches are background refreshes and should not trigger a full loading screen.
             if (data === null) {
                 setLoading(true);
             }
@@ -51,29 +50,16 @@ export function useSyncedData<T>(
 
         doFetch();
 
-        const handleStorageUpdate = (e: Event) => {
-            const detail = (e as CustomEvent).detail;
-            if (watchKeys.includes(detail?.key)) {
-                doFetch();
-            }
-        };
-
-        const handleExternalStorageUpdate = (e: StorageEvent) => {
-             if (e.key && watchKeys.includes(e.key)) {
-                doFetch();
-            }
-        }
-
-        window.addEventListener(STORAGE_EVENT_KEY, handleStorageUpdate);
-        window.addEventListener('storage', handleExternalStorageUpdate);
+        const unsubscribers = watchKeys.map(key => 
+            syncTransport.subscribe(key, doFetch)
+        );
 
         return () => {
             isMounted = false;
-            window.removeEventListener(STORAGE_EVENT_KEY, handleStorageUpdate);
-            window.removeEventListener('storage', handleExternalStorageUpdate);
+            unsubscribers.forEach(unsub => unsub());
         };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [keysDependency, trigger]);
+    }, [keysDependency, trigger, syncTransport]);
 
     return { data, loading, refetch };
 }

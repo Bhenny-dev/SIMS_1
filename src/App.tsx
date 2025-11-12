@@ -8,6 +8,8 @@ import { NotificationProvider } from './contexts/NotificationContext.tsx';
 import { VisibilityProvider } from './contexts/VisibilityContext.tsx';
 import { EventProvider } from './contexts/EventContext.tsx';
 import { ModalProvider } from './contexts/ModalContext.tsx';
+import { SyncProvider } from './contexts/SyncContext.tsx';
+import { syncService } from './services/syncService.ts';
 
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 import Login from './pages/Login.tsx';
@@ -27,13 +29,14 @@ import Reports from './pages/Reports.tsx';
 function App() {
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <ToastProvider>
-          <NotificationProvider>
-            <EventProvider>
-              <ModalProvider>
-                <VisibilityProvider>
-                  <HashRouter>
+      <SyncProvider syncTransport={syncService}>
+        <AuthProvider>
+          <ToastProvider>
+            <NotificationProvider>
+              <EventProvider>
+                <ModalProvider>
+                  <VisibilityProvider>
+                    <HashRouter>
                     <Routes>
                       <Route path="/login" element={<Login />} />
                       <Route path="/signup" element={<Signup />} />
@@ -52,13 +55,14 @@ function App() {
                       </Route>
                       <Route path="*" element={<Navigate to="/" />} />
                     </Routes>
-                  </HashRouter>
-                </VisibilityProvider>
-              </ModalProvider>
-            </EventProvider>
-          </NotificationProvider>
-        </ToastProvider>
-      </AuthProvider>
+                    </HashRouter>
+                  </VisibilityProvider>
+                </ModalProvider>
+              </EventProvider>
+            </NotificationProvider>
+          </ToastProvider>
+        </AuthProvider>
+      </SyncProvider>
     </ThemeProvider>
   );
 }

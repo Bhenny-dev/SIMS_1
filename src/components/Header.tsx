@@ -9,6 +9,7 @@ import { Team, Event, User } from '../types.ts';
 import { motion } from 'framer-motion';
 import { getTeamStyles } from '../config.ts';
 import { useVisibility } from '../hooks/useVisibility.ts';
+import { SyncIndicator } from './SyncIndicator.tsx';
 
 const HamburgerIcon: React.FC<{ isOpen: boolean }> = ({ isOpen }) => (
     <svg
@@ -217,6 +218,10 @@ const Header: React.FC<{ onToggleSidebar: () => void; sidebarOpen: boolean; }> =
           >
             {theme === 'dark' ? <i className="bi bi-sun-fill text-lg"></i> : <i className="bi bi-moon-fill text-lg"></i>}
           </motion.button>
+
+          <div className="hidden md:block">
+            <SyncIndicator />
+          </div>
           
           <div className="relative" ref={notificationRef}>
               <motion.button 
